@@ -111,3 +111,7 @@ bcftools mpileup -b bams -d 1000 -f /uufs/chpc.utah.edu/common/home/gompert-grou
 Variant filtering was performed with [vcfFilter.pl](vcfFilter.pl), which applied a 2X minimim depth and max missing data of 80% along with other quality filters. This left us with 49,028 SNPs in `filtered2x_frogs_uce.vcf`.
 
 We uncovered several labelling errors that were then corrected for downstream analysis. ACA0044 and ACA0039 were dropped; ACA LS 0313, ACA LS0359 and ACA LS 0356 were corrected to ASA, and then ASA LS 0313 as it was already included.
+
+# Population genetic analyses
+
+Everything for the population genetic analyses (and phylogenetic analyses described in the next section) can be found in `/uufs/chpc.utah.edu/common/home/gompert-group4/projects/frogs_spec_contin`.
