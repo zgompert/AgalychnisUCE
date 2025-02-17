@@ -122,4 +122,17 @@ Working in the `Variants` subdirectory, I converted the filtered vcf file to to 
 perl vcf2gl.pl filtered2x_frogs_uce.vcf
 perl splitPops.pl filtered2x_frogs.gl
 ```
-I then used xxx to estimate population allele frequencies.
+I then used `estpEM` (version 0.1) to estimate population allele frequencies (convergence tolerance = 0.001, 50 starts). This was done in the `PopGen` subdirectory.
+
+```{perl}
+#!/usr/bin/perl
+#
+# run estpEM
+#
+
+foreach $gl (@ARGV){
+	$out = $gl;
+	$out =~ s/\.gl// or die;
+	system "estpEM -i $gl -o p_$out.txt -e 0.001 -m 50 -h 2\n";
+}
+```
