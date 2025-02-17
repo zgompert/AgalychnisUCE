@@ -136,3 +136,4 @@ foreach $gl (@ARGV){
 	system "estpEM -i $gl -o p_$out.txt -e 0.001 -m 50 -h 2\n";
 }
 ```
+We then computed pairwise Fst (as Nei's Gst, see[Nei 1973](https://www.pnas.org/doi/pdf/10.1073/pnas.70.12.3321)) for conspecific and heterospecific population pairs.
