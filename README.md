@@ -115,3 +115,11 @@ We uncovered several labelling errors that were then corrected for downstream an
 # Population genetic analyses
 
 Everything for the population genetic analyses (and phylogenetic analyses described in the next section) can be found in `/uufs/chpc.utah.edu/common/home/gompert-group4/projects/frogs_spec_contin`.
+
+Working in the `Variants` subdirectory, I converted the filtered vcf file to to gl format and split the gl file by population (this drops the individuals noted above) with [vcf2gl.pl](vcf2gl.pl) and [splitPops.pl](splitPops.pl).
+
+```{bash}
+perl vcf2gl.pl filtered2x_frogs_uce.vcf
+perl splitPops.pl filtered2x_frogs.gl
+```
+I then used xxx to estimate population allele frequencies.
