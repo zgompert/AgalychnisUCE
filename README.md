@@ -83,3 +83,31 @@ foreach $file1 (@ARGV){
 
 $pm->wait_all_children;
 ```
+I then used `samtools` (version 1.16) to compress, sort and index the sam alignment files, see [Sam2BamFork.pl](Sam2BamFork.pl).
+
+I used `bcftools` (version 1.16) for variant calling as follows:
+
+```{bash}
+#!/bin/sh
+#SBATCH --time=120:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=24
+#SBATCH --account=gompert-kp
+#SBATCH --partition=gompert-kp
+#SBATCH --job-name=bcf_call
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=zach.gompert@usu.edu
+
+
+module load samtools
+## version 1.16
+module load bcftools
+## version 1.16
+
+cd /uufs/chpc.utah.edu/common/home/gompert-group4/data/UCE_data/Alignments
+
+bcftools mpileup -b bams -d 1000 -f /uufs/chpc.utah.edu/common/home/gompert-group4/data/UCE_data/Reference/CleanUCE.fasta -a FORMAT/DP,FORMAT/AD -q 20 -Q 30 -I -Ou | bcftools call -v -c -p 0.01 -Ov -o frogs_uce.vcf
+```
+Variant filtering was performed with [vcfFilter.pl](vcfFilter.pl), which applied a 2X minimim depth and max missing data of 80% along with other quality filters. This left us with 49,028 SNPs in `filtered2x_frogs_uce.vcf`.
+
+We uncovered several labelling errors that were then corrected for downstream analysis. ACA0044 and ACA0039 were dropped; ACA LS 0313, ACA LS0359 and ACA LS 0356 were corrected to ASA, and then ASA LS 0313 as it was already included.
