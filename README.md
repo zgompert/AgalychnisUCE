@@ -159,6 +159,29 @@ perl -p -i -e 's/-/N/g' *nex
 ```
 Seperately, I determined the number of invariant bases of each type (ATCG) so that this information could be included in the phylogenetic inference.
 
+Firs, from the `Alignments subdirectory`, I obtained depth data for all nucleotides.
+
+```{bash}
+#!/bin/sh 
+#SBATCH --time=72:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=12
+#SBATCH --account=gompert-np
+#SBATCH --partition=gompert-np
+#SBATCH --job-name=mpDepth
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=zach.gompert@usu.edu
+
+module load samtools
+module load bcftools
+#versions 1.16
+
+cd /uufs/chpc.utah.edu/common/home/gompert-group4/data/UCE_data/Alignments
+
+samtools depth -f bams --reference /uufs/chpc.utah.edu/common/home/gompert-group4/data/UCE_data/Reference/CleanUCE.fasta -q 20 -Q 30 > frogs_uce_depth.txt
+```
+Next, I summarized this information, which I cross-reference with SNP information, in `/uufs/chpc.utah.edu/common/home/gompert-group4/projects/frogs_spec_contin/Beast`. 
+
 ```{bash}
 SummarizeDepthBcounts.R
 perl -p -i -e 's/(\d+)$/\1-\1/' invariant_regions.txt
