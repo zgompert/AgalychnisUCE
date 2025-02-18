@@ -195,4 +195,20 @@ cat invar_bases.fa | grep -v "^>" | sort | uniq -c
 #    151 N
 # 288983 T
 ```
+I then further prepared the nexus file for analysis with `Beast`.
 
+```{bash}
+## compute number of Ns
+perl CountNs.pl beast_frogs_uce.nex 
+
+## several with >10,000 out of 49,028, let's drop those
+perl DropMissing.pl 
+
+## then fixing symbol for missing and number of taxa manually in nex file
+
+## next retain only every Nth character for better mixing
+perl SubsetNex.pl beast_frogs_uce_drop.nex
+
+## this keeps 1008 informative characters
+```
+Next, I used `beauti` to create a xml input file and then ran `Beast2` (v2.7.5). I set the following options (in `uce_final.xml`). GTR model with gamma rate variation approximated by four categories, no invariant sites (except those included), substitution rates estimated, a random local clock with scalling, the coalescent extended Bayesian skyline prior, a time prior on the TMRCA for all samples = Normal(49.4, 2.2) (mean and sd of two estiamtes I have from [Portik et al. 2023](https://academic.oup.com/mbe/article/40/5/msad109/7151539)), 20,000,000 MCMC steps.
