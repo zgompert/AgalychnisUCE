@@ -137,3 +137,39 @@ foreach $gl (@ARGV){
 }
 ```
 We then computed pairwise Fst (as Nei's Gst, see[Nei 1973](https://www.pnas.org/doi/pdf/10.1073/pnas.70.12.3321)) for conspecific and heterospecific population pairs. This was done in R, see [GenDif.R](GenDif.R).
+
+# Phylogenetic analyses
+
+I used the filtered variant data to create an input file for `Beast2`, which I used to reconstruct an individual-based, time-calibrated phylogenetic tree. My main interest here was in the divergence times between species and other deeper splits. This is all in the `Beast` subdirectory. Here is what I did (all of the scripts are in this repository):
+
+```{bash}
+## convert the filtered vcf file to a fasta alignment file with just SNPs
+## this uses standard ambiguity codes and a script from Victor Soria-Carrasco 
+perl bcf2fa.pl -i ../Variants/filtered2x_frogs_uce.vcf -o filtered2x_frogs_uce.fa
+
+## drop the individuals with uncertain labels/IDs from the alignment:
+## DROP_ACA_CA_0044, DROP_ACA_CA_0039, DROP_ASA_LS_0313
+perl subsetAlign.pl
+
+## convert the alignment to nexus format
+perl aliconverter.pl -i beast_frogs_uce.fa -o beast_frogs_uce.nex
+
+## chnage - to missing = N
+perl -p -i -e 's/-/N/g' *nex
+```
+Seperately, I determined the number of invariant bases of each type (ATCG) so that this information could be included in the phylogenetic inference.
+
+```{bash}
+SummarizeDepthBcounts.R
+perl -p -i -e 's/(\d+)$/\1-\1/' invariant_regions.txt
+
+samtools faidx --region-file invariant_regions.txt -o invar_bases.fa /uufs/chpc.utah.edu/common/home/gompert-group4/data/UCE_data/Reference/CleanUCE.fasta
+
+cat invar_bases.fa | grep -v "^>" | sort | uniq -c
+# 291136 A
+# 183485 C
+# 181494 G
+#    151 N
+# 288983 T
+```
+
